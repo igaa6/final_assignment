@@ -21,8 +21,6 @@ while arg = args.shift()
       console.log '''
         Usage: grunt [options]
 
-        > grunt with fallback-able connect server for debug
-
         Options:
           -p, --port  [INT]  server port (3000)
           -m, --mode  [STR]  "dev" or "pro" (dev)
