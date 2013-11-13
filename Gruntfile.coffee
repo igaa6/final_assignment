@@ -31,7 +31,7 @@ while arg = args.shift()
           grunt -p 3000 -m dev -i index.html
 
         Tasks:
-          Language:
+          Build:
             coffee, stylus, jade
           Lint:
             jshint, csslint
