@@ -2,16 +2,18 @@
   "name": "grunt-app",
   "version": "0.0.1",
   "private": true,
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "grunt": "*",
-    "grunt-contrib-watch": "*",
     "grunt-contrib-coffee": "*",
-    "grunt-contrib-jade": "*",
-    "grunt-contrib-stylus": "*",
+    "grunt-contrib-jshint": "*",
     "grunt-contrib-uglify": "*",
+    "grunt-contrib-stylus": "*",
+    "grunt-contrib-csslint": "*",
     "grunt-contrib-cssmin": "*",
-    "grunt-contrib-htmlmin": "*"
+    "grunt-contrib-jade": "*",
+    "grunt-contrib-htmlmin": "*",
+    "grunt-contrib-connect": "*",
+    "grunt-contrib-watch": "*"
   }
 }
