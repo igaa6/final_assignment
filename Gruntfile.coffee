@@ -7,6 +7,7 @@ http = require 'http'
 PORT = 3000
 MODE = 'dev'
 INDEX = 'index.html'
+BUILD = no
 
 args = [].concat process.argv
 while arg = args.shift()
@@ -14,6 +15,7 @@ while arg = args.shift()
     when '-m', '--mode' then MODE = args.shift()
     when '-p', '--port' then PORT = parseInt args.shift()
     when '-i', '--index' then INDEX = args.shift()
+    when 'build' then BUILD = yes
     when '-h', '--help'
       console.log '''
         Usage: grunt [options]
@@ -61,10 +63,9 @@ serve = (route, req, res) ->
       print exist, req, res
       return fs.createReadStream(index).pipe(res)
 
-
-module.exports = (grunt) ->
+unless BUILD
   console.log """
-    server: server -p #{PORT} -m #{MODE} -i #{INDEX}
+    server: grunt -p #{PORT} -m #{MODE} -i #{INDEX}
 
     """
   http.createServer (req, res) ->
@@ -72,6 +73,7 @@ module.exports = (grunt) ->
     return serve route, req, res
   .listen PORT
 
+module.exports = (grunt) ->
   grunt.initConfig
 
     pkg: grunt.file.readJSON 'package.json'
@@ -139,6 +141,10 @@ module.exports = (grunt) ->
         }]
 
     watch:
+      options:
+        debounceDelay: 1000
+        dateFormat: (time) ->
+          grunt.log.writeln "The watch finished in #{time}ms at #{new Date().toLocaleTimeString()}"
       coffee:
         files: ['assets/**/*.coffee']
         tasks: ['coffee', 'uglify']

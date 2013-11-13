@@ -36,17 +36,15 @@ npm -g install grunt-cli
 npm install
 ```
 
+## watch
+
+```
+grunt
+```
+
 ## build
 
 ```
 grunt build
 ```
-
-## watch
-
-```
-grunt watch
-```
-
-
 
