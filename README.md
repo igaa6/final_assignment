@@ -12,6 +12,12 @@ npm -g i grunt-cli
 npm i
 ```
 
+## run
+
+```
+grunt
+```
+
 ## usage
 
 ```
