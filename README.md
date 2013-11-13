@@ -2,11 +2,19 @@
 
 * grunt template
 
-## lang
+## feature
 
-* stylus (css)
 * coffee (js)
+* stylus (css)
 * jade (html)
+* jshint
+* csslint
+* uglify
+* cssmin
+* htmlmin
+* watch
+* connect
+* livereload
 
 ## install
 
