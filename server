@@ -18,7 +18,7 @@ while arg = process.argv.shift()
     when '-i', '--index' then INDEX = process.argv.shift()
     when '-g', '--grunt' then GRUNT = (spawn 'grunt').pid
     when '-h', '--help'
-      echo '''
+      console.log '''
         Usage: server [options]
 
         > fallback-able simple static server for debug
