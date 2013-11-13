@@ -8,72 +8,78 @@ http = require 'http'
 
 PORT = 3000
 MODE = 'dev'
-GRUNT = no
+INDEX = 'index.html'
+GRUNT = 0
 
 while arg = process.argv.shift()
   switch arg
-    when '-m', '--mode'
-      MODE = process.argv.shift()
-    when '-p', '--port'
-      PORT = parseInt process.argv.shift()
-    when '-g', '--grunt'
-      GRUNT = yes
+    when '-m', '--mode' then MODE = process.argv.shift()
+    when '-p', '--port' then PORT = parseInt process.argv.shift()
+    when '-i', '--index' then INDEX = process.argv.shift()
+    when '-g', '--grunt' then GRUNT = (spawn 'grunt').pid
     when '-h', '--help'
       echo '''
         Usage: server [options]
 
+        > fallback-able simple static server for debug
+
         Options:
-          -p, --port    server port
-                        defaults to 3000
-          -m, --mode    'pro' for minified assets
-                        'dev' for unminified assets
-                        defaults to 'pro'
-          -i, --index   stop fallback html name
-                        defaults to 'index.html'
-          -g, --grunt   spawn grunt watch process
+          -p, --port  [INT]  server port (3000)
+          -m, --mode  [STR]  dev or pro (dev)
+          -i, --index [STR]  fallback file (index.html)
+          -g, --grunt        spawn grunt watch process
 
         Example:
-          ./server -m dev -p 3000
+          ./server -p 3000 -m dev -i index.html -g
         '''
       process.exit 1
 
-unless MODE in ['dev', 'pro']
-  MODE = 'dev'
+MODE = 'dev' unless MODE in ['dev', 'pro']
+ROOT = if MODE is 'dev' then 'dist' else 'public'
+INDEX = INDEX.slice 1 while '/' is INDEX.slice 0, 1
 
-if MODE is 'dev'
-  ROOT = 'dist'
-else
-  ROOT = 'public'
+index = path.resolve ROOT, INDEX
 
-if GRUNT
-  child = spawn 'grunt'
+unless fs.existsSync index
+  console.error "server: #{ROOT}/#{INDEX} not found"
+  process.exit 1
 
 console.log """
-
-  HTTP server.
-    -p port : #{PORT}
-    -m mode : #{MODE} / assets root is #{ROOT}
-    -g grunt: #{if GRUNT then child.pid else '--'}
+  server: server -p #{PORT} -m #{MODE} -i #{INDEX}#{ if 0 < GRUNT then ' -g' else ''}
 
   """
 
-index = path.resolve ROOT, 'index.html'
+print = (exist, req, res) ->
+  status = switch yes
+    when res.statusCode < 300 then "\x1b[32m#{res.statusCode}\x1b[0m"
+    when res.statusCode < 400 then "\x1b[36m#{res.statusCode}\x1b[0m"
+    when res.statusCode < 500 then "\x1b[32m#{res.statusCode}\x1b[0m"
+    else                           "\x1b[31m#{res.statusCode}\x1b[0m"
+  method = "\x1b[37m#{req.method}\x1b[0m"
+  fail = "\x1b[35m*\x1b[0m"
+  done = "\x1b[32m^\x1b[0m"
+  process.stdout.write "#{new Date().toLocaleTimeString()} | #{if exist then done else fail} #{method} #{status} #{req.url}\n"
+
+serve = (route, req, res) ->
+  fs.exists route, (exist) ->
+    fs.stat route, (err, stat) ->
+      if exist and stat.isFile()
+        print exist, req, res
+        return fs.createReadStream(route).pipe(res)
+      print exist, req, res
+      return fs.createReadStream(index).pipe(res)
 
 http.createServer (req, res) ->
-  parse = path.resolve ROOT, (uri.parse req.url).pathname.replace /^\//, ''
-  fs.exists parse, (exists) ->
-    fs.stat parse, (err, stat) ->
+  route = path.resolve ROOT, (url.parse req.url).pathname.replace /^\//, ''
+  return serve route, req, res
+
+
+
+  fs.exists route, (exists) ->
+    fs.stat route, (err, stat) ->
       if exists and stat.isFile()
-        console.log "http.#{process.pid} | #{req.method} #{res.statusCode} ^#{req.url}"
-        return fs.createReadStream(parse).pipe(res)
-      console.log "http.#{process.pid} | #{req.method} #{res.statusCode} *#{req.url}"
+        console.log "#{done} #{method} #{status} #{routes}"
+        return fs.createReadStream(route).pipe(res)
       fs.createReadStream(index).pipe(res)
 .listen PORT
-
-process.on 'SIGTERM', -> process.emit 'exit'
-process.on 'SIGINT', -> process.emit 'exit'
-
-process.on 'exit', ->
-  process.kill child.pid if child?.pid?
-  process.exit 0
 
