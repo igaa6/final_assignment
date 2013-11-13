@@ -2,6 +2,12 @@
 
 * grunt template
 
+## lang
+
+* stylus (css)
+* coffee (js)
+* jade (html)
+
 ## usage
 
 ```
@@ -22,3 +28,25 @@ Options:
 Example:
   grunt -p 3000 -m dev -i index.html
 ```
+
+## install
+
+```
+npm -g install grunt-cli
+npm install
+```
+
+## build
+
+```
+grunt build
+```
+
+## watch
+
+```
+grunt watch
+```
+
+
+
