@@ -1,0 +1,79 @@
+#!/usr/bin/env coffee
+fs = require 'fs'
+url = require 'url'
+util = require 'util'
+path = require 'path'
+http = require 'http'
+{spawn} = require 'child_process'
+
+PORT = 3000
+MODE = 'dev'
+GRUNT = no
+
+while arg = process.argv.shift()
+  switch arg
+    when '-m', '--mode'
+      MODE = process.argv.shift()
+    when '-p', '--port'
+      PORT = parseInt process.argv.shift()
+    when '-g', '--grunt'
+      GRUNT = yes
+    when '-h', '--help'
+      echo '''
+        Usage: server [options]
+
+        Options:
+          -p, --port    server port
+                        defaults to 3000
+          -m, --mode    'pro' for minified assets
+                        'dev' for unminified assets
+                        defaults to 'pro'
+          -i, --index   stop fallback html name
+                        defaults to 'index.html'
+          -g, --grunt   spawn grunt watch process
+
+        Example:
+          ./server -m dev -p 3000
+        '''
+      process.exit 1
+
+unless MODE in ['dev', 'pro']
+  MODE = 'dev'
+
+if MODE is 'dev'
+  ROOT = 'dist'
+else
+  ROOT = 'public'
+
+if GRUNT
+  child = spawn 'grunt'
+
+console.log """
+
+  HTTP server.
+    -p port : #{PORT}
+    -m mode : #{MODE} / assets root is #{ROOT}
+    -g grunt: #{if GRUNT then child.pid else '--'}
+
+  """
+
+index = path.resolve ROOT, 'index.html'
+
+http.createServer (req, res) ->
+  parse = path.resolve ROOT, (uri.parse req.url).pathname.replace /^\//, ''
+  fs.exists parse, (exists) ->
+    fs.stat parse, (err, stat) ->
+      if exists and stat.isFile()
+        console.log "http.#{process.pid} | #{req.method} #{res.statusCode} ^#{req.url}"
+        return fs.createReadStream(parse).pipe(res)
+      console.log "http.#{process.pid} | #{req.method} #{res.statusCode} *#{req.url}"
+      fs.createReadStream(index).pipe(res)
+.listen PORT
+
+process.on 'SIGTERM', -> process.emit 'exit'
+process.on 'SIGINT', -> process.emit 'exit'
+
+process.on 'exit', ->
+  process.kill child.pid if child?.pid?
+  process.exit 0
+
