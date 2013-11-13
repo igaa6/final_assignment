@@ -1,35 +1,22 @@
 # grunt-city
 
-* grunt template
-
-## feature
-
-* coffee (js)
-* stylus (css)
-* jade (html)
-* jshint
-* csslint
-* uglify
-* cssmin
-* htmlmin
-* watch
-* connect
-* livereload
+* client side application template
+* provides **build**, **lint**, **minify**, **livereload**
 
 ## install
 
 ```
-npm -g install grunt-cli
-npm install
+git clone geta6/grunt-city myapp
+cd myapp
+npm -g i grunt-cli
+npm i
 ```
 
 ## usage
 
 ```
-grunt -h
-```
+% grunt -h
 
-```
 Usage: grunt [options]
 
 > grunt with fallback-able simple static server for debug
@@ -57,10 +44,16 @@ Tasks:
     build   - execute all tasks without server
 ```
 
-## mode
+## options
 
-* `dev`: route to `dist/` (un-minified assets)
-* `pro`: route to `public/` (minified assets)
+* port
+  * static server port
+  * assets server on `localhost` with port `3000` default
+* mode
+  * mode `dev` serves un-minified assets, default
+  * mode `pro` serves minified assets
+* index
+  * static server fallback defaults to `index.html`
 
 ## server core
 
@@ -77,23 +70,14 @@ fs.exists route, (exist) ->
     return fs.createReadStream(index).pipe(res)
 ```
 
-## tasks
-
-### watch (and launch server)
-
-```
-grunt
-```
-
-### build
-
-```
-grunt build
-```
-
 ## livereload
 
-* [livereload extensions](http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions-)
+* install [livereload extensions](http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions-)
+
+## caution
+
+* static server is only for preview
+* is not compatible for production environment
 
 ## license
 
