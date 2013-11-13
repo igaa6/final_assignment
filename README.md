@@ -70,3 +70,6 @@ grunt
 grunt build
 ```
 
+## license
+
+MIT
