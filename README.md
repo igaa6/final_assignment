@@ -1,7 +1,7 @@
 # grunt-city
 
 * client side application template
-* provides **build**, **lint**, **minify**, **livereload**
+* provides **build**, **lint**, **minify** and **livereload**
 
 ## install
 
