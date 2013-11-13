@@ -103,9 +103,6 @@ module.exports = (grunt) ->
 
     uglify:
       minify:
-        options:
-          sourceMap: (name) ->
-            name.replace /\.js$/, '.js.map'
         files: [{
           expand: yes
           cwd: 'dist/'
