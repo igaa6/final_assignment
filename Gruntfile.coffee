@@ -63,6 +63,8 @@ module.exports = (grunt) ->
         }]
 
     stylus:
+      options:
+        compress: no
       compile:
         files: [{
           expand: yes
