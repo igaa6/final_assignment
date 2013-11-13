@@ -31,11 +31,23 @@ while arg = args.shift()
 
         Example:
           grunt -p 3000 -m dev -i index.html
+
+        Tasks:
+          Language:
+            coffee, stylus, jade
+          Lint:
+            jshint, csslint
+          Minify:
+            uglify, cssmin, htmlmin
+          Server:
+            connect, watch
+          Phony:
+            default - launch server after build
+            build   - execute all tasks without server
         '''
       process.exit 1
 
 index = path.resolve MODE, INDEX
-
 
 module.exports = (grunt) ->
   grunt.initConfig

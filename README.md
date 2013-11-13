@@ -42,6 +42,19 @@ Options:
 
 Example:
   grunt -p 3000 -m dev -i index.html
+
+Tasks:
+  Language:
+    coffee, stylus, jade
+  Lint:
+    jshint, csslint
+  Minify:
+    uglify, cssmin, htmlmin
+  Server:
+    connect, watch
+  Phony:
+    default - launch server after build
+    build   - execute all tasks without server
 ```
 
 ## mode
