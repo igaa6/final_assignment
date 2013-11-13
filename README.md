@@ -8,6 +8,13 @@
 * coffee (js)
 * jade (html)
 
+## install
+
+```
+npm -g install grunt-cli
+npm install
+```
+
 ## usage
 
 ```
@@ -29,20 +36,35 @@ Example:
   grunt -p 3000 -m dev -i index.html
 ```
 
-## install
+## mode
 
-```
-npm -g install grunt-cli
-npm install
+* `dev`: route to `dist/` (un-minified assets)
+* `pro`: route to `public/` (minified assets)
+
+## server core
+
+request to unexists path, fallback to index file.
+
+```coffee
+# route = req.url
+# index = path.resolve 'public', 'index.html'
+
+fs.exists route, (exist) ->
+  fs.stat route, (err, stat) ->
+    if exist and stat.isFile()
+      return fs.createReadStream(route).pipe(res)
+    return fs.createReadStream(index).pipe(res)
 ```
 
-## watch
+## tasks
+
+### watch (and launch server)
 
 ```
 grunt
 ```
 
-## build
+### build
 
 ```
 grunt build
