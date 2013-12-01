@@ -34,7 +34,7 @@ while arg = args.shift()
           Build:
             coffee, stylus, jade
           Lint:
-            jshint, csslint
+            coffeelint, csslint
           Minify:
             uglify, cssmin, htmlmin
           Server:
