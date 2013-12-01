@@ -88,10 +88,13 @@ module.exports = (grunt) ->
           ext: '.html'
         }]
 
-    jshint:
-      options:
-        jshintrc: '.jshintrc'
-      files: 'dist/**/*.js'
+    coffeelint:
+      all:
+        files: [{
+          expand: yes
+          cwd: 'assets/'
+          src: [ '**/*.coffee' ]
+        }]
 
     csslint:
       options:
@@ -138,13 +141,13 @@ module.exports = (grunt) ->
           grunt.log.writeln "The watch finished in #{time}ms at #{new Date().toLocaleTimeString()}"
       coffee:
         files: ['assets/**/*.coffee']
-        tasks: ['coffee', 'uglify']
+        tasks: ['coffeelint', 'coffee', 'uglify']
       jade:
         files: ['assets/*.jade']
         tasks: ['jade']
       stylus:
         files: ['assets/**/*.styl']
-        tasks: ['stylus', 'cssmin']
+        tasks: ['stylus', 'csslint', 'cssmin']
 
     connect:
       server:
@@ -165,7 +168,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-stylus'
   grunt.loadNpmTasks 'grunt-contrib-jade'
   # lint
-  grunt.loadNpmTasks 'grunt-contrib-jshint'
+  grunt.loadNpmTasks 'grunt-coffeelint'
   grunt.loadNpmTasks 'grunt-contrib-csslint'
   # minify
   grunt.loadNpmTasks 'grunt-contrib-uglify'
@@ -176,7 +179,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-watch'
 
   grunt.registerTask 'build', [
-    'coffee', 'jshint', 'uglify'
+    'coffeelint', 'coffee', 'uglify'
     'stylus', 'csslint', 'cssmin'
     'jade', 'htmlmin'
   ]
