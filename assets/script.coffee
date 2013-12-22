@@ -1,7 +1,5 @@
 class Application extends Backbone.Router
 
-  console.log 'hogaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaae'
-
   routes:
     '': 'index'
 
