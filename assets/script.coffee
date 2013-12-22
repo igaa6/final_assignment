@@ -1,5 +1,7 @@
 class Application extends Backbone.Router
 
+  console.log 'hogaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaae'
+
   routes:
     '': 'index'
 
@@ -10,4 +12,4 @@ class Application extends Backbone.Router
     $ =>
       ($ 'p').text 'routing index'
 
-app = new Application
+app = new Application()
