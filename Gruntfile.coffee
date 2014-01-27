@@ -1,4 +1,3 @@
-
 'use strict'
 
 module.exports = (grunt) ->
@@ -22,8 +21,10 @@ module.exports = (grunt) ->
   path = require 'path'
   dgram = require 'dgram'
 
-  f = (src, dest) ->
-    return [{ expand: yes, cwd: 'assets/', src: [src], dest: 'public/' }]
+  f = (src, ext) ->
+    if ext
+      return [{ expand: yes, cwd: 'assets/', src: src, dest: 'public/', ext: ext }]
+    return [{ expand: yes, cwd: 'assets/', src: src, dest: 'public/' }]
 
   grunt.initConfig
 
@@ -38,15 +39,15 @@ module.exports = (grunt) ->
         sourceMap: yes
         sourceRoot: './'
       release:
-        files: f [ '**/*.coffee' ]
+        files: f [ '**/*.coffee'], '.js'
 
     stylus:
       release:
-        files: f [ '**/*.styl' ]
+        files: f [ '**/*.styl' ], '.css'
 
     jade:
       release:
-        files: f [ '**/*.jade' ]
+        files: f [ '**/*.jade' ], '.html'
 
     imagemin:
       release:
@@ -100,11 +101,12 @@ module.exports = (grunt) ->
                   ics: makeIcs SIO_RIGHT, ID_NECK
                   value: 5000
                 }
-                { command: 3 }
+                { command: 8 }
               ]
               message = new Buffer JSON.stringify json
               client = dgram.createSocket 'udp4'
-              client.send message, 0, message.length, 3500, '*.*.*.*', (err, bytes) ->
+              ip = '133.27.171.178'
+              client.send message, 0, message.length, 3500, ip, (err, bytes) ->
                 console.error err if err
                 console.log "send #{bytes} bytes"
                 console.log json

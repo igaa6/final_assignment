@@ -1,6 +1,6 @@
 aud = new Audio
 aud.autoplay = no
-aud.src = '/glass.mp3'
+aud.src = '/cheers1.mp3'
 
 max = { x: 0, y: 0, z: 0 }
 min = { x: 0, y: 0, z: 0 }
@@ -9,13 +9,11 @@ phase = [no, no, no]
 
 lock = no
 
-
 ($ document).on 'click', '#ini', ->
   aud.load()
   aud.pause()
   ($ this).fadeOut 240
-
-
+     		   
 window.addEventListener 'devicemotion', (event) ->
   event.preventDefault()
   ac = event.acceleration
@@ -32,41 +30,16 @@ window.addEventListener 'devicemotion', (event) ->
   min.y = ac.y if ac.y < min.y
   min.z = ac.z if ac.z < min.z
 
-  if !lock and !phase[0] and !phase[1] and !phase[2]
-    if ac.z > 25 and ac.z > y and ac.z > x
-      ($ "#ac0").css 'color', '#00F'
-      aud.load()
-      aud.play()
-      ($ '#st1').addClass 'on'
-      phase[0] = on
-      lock = yes
-      setTimeout ->
-        lock = no
-      , 1000
-  else if !lock and !phase[1] and !phase[2]
-    if ac.x > 30 and ac.x > y and ac.x > z
-      ($ "#ac1").css 'color', '#00F'
-      aud.load()
-      aud.play()
-      ($ '#st2').addClass 'on'
-      phase[1] = on
-      lock = yes
-      setTimeout ->
-        lock = no
-      , 1000
-  else if !lock and !phase[2]
-    if ac.z > 30
-      ($ "#ac2").css 'color', '#00F'
-      aud.load()
-      aud.play()
-      ($ '#st3').addClass 'on'
-      phase[2] = on
-      lock = yes
-      setTimeout ->
-        lock = no
-      , 1000
-
-
+  if ac.x > 50 or ac.x < -50
+    ($ "#ac0").css 'color', '#00F'
+    aud.load()
+    aud.play()
+    ($ '#st1').addClass 'on'
+    lock = yes
+    $.ajax '/push',
+    setTimeout ->
+     lock = no
+    , 1000
 
   ($ "#ac0").html "X: #{ac.x}<br>#{max.x}<br>#{min.x}"
   ($ "#ac1").html "Y: #{ac.y}<br>#{max.y}<br>#{min.y}"
