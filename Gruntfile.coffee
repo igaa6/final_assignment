@@ -3,10 +3,6 @@
 
 module.exports = (grunt) ->
 
-  files = (src, dest) ->
-    return [{ expand: yes, cwd: 'assets/', src: [src], dest: dest }]
-
-  require 'coffee-script'
   require 'coffee-errors'
 
   grunt.loadNpmTasks 'grunt-contrib-copy'
@@ -25,60 +21,35 @@ module.exports = (grunt) ->
   url = require 'url'
   path = require 'path'
 
+  f = (src, dest) ->
+    return [{ expand: yes, cwd: 'assets/', src: [src], dest: 'public/' }]
+
   grunt.initConfig
 
     pkg: grunt.file.readJSON 'package.json'
 
     copy:
       release:
-        files: [{
-          expand: yes
-          cwd: 'assets/'
-          src: [ '**/*', '!**/*.{jpg,png,gif,coffee,styl,jade}' ]
-          dest: 'public/'
-        }]
+        files: f [ '**/*', '!**/*.{jpg,png,gif,coffee,styl,jade}' ]
 
     coffee:
       options:
         sourceMap: yes
         sourceRoot: './'
       release:
-        files: [{
-          expand: yes
-          cwd: 'assets/'
-          src: [ '**/*.coffee' ]
-          dest: 'public/'
-          ext: '.js'
-        }]
+        files: f [ '**/*.coffee' ]
 
     stylus:
       release:
-        files: [{
-          expand: yes
-          cwd: 'assets/'
-          src: [ '**/*.styl' ]
-          dest: 'public/'
-          ext: '.css'
-        }]
+        files: f [ '**/*.styl' ]
 
     jade:
       release:
-        files: [{
-          expand: yes
-          cwd: 'assets/'
-          src: [ '**/*.jade' ]
-          dest: 'public/'
-          ext: '.html'
-        }]
+        files: f [ '**/*.jade' ]
 
     imagemin:
       release:
-        files: [{
-          expand: yes
-          cwd: 'assets/'
-          src: [ '**/*.{jpg,png,gif}' ]
-          dest: 'public/'
-        }]
+        files: f [ '**/*.{jpg,png,gif}' ]
 
     watch:
       options:
