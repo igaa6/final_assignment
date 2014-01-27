@@ -13,21 +13,12 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-stylus'
   grunt.loadNpmTasks 'grunt-contrib-jade'
-  grunt.loadNpmTasks 'grunt-contrib-csslint'
-  grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-imagemin'
   grunt.loadNpmTasks 'grunt-contrib-connect'
   grunt.loadNpmTasks 'grunt-contrib-watch'
-  grunt.loadNpmTasks 'grunt-coffee-lint'
-  grunt.loadNpmTasks 'grunt-simple-mocha'
   grunt.loadNpmTasks 'grunt-notify'
 
-  grunt.registerTask 'jsbuild', ['copy:js', 'coffee_lint', 'coffee', 'uglify']
-  grunt.registerTask 'cssbuild', ['copy:css', 'stylus', 'csslint']
-  grunt.registerTask 'imgbuild', ['copy:img', 'imagemin']
-  grunt.registerTask 'build', ['imgbuild', 'cssbuild', 'jsbuild', 'jade']
-
-  grunt.registerTask 'test', ['build', 'simplemocha']
+  grunt.registerTask 'build', ['copy', 'imagemin', 'coffee', 'stylus', 'jade', 'imagemin']
   grunt.registerTask 'default', ['build', 'connect', 'watch']
 
   fs = require 'fs'
@@ -39,114 +30,77 @@ module.exports = (grunt) ->
     pkg: grunt.file.readJSON 'package.json'
 
     copy:
-      img:
-        files: [{ expand: yes, cwd: 'assets/', src: [ '**/*.{jpg,png,gif}' ], dest: 'dist/' }]
-      js:
-        files: [{ expand: yes, cwd: 'assets/', src: [ '**/*.{js,coffee}' ], dest: 'dist/' }]
-      css:
-        files: [{ expand: yes, cwd: 'assets/', src: [ '**/*.css' ], dest: 'dist/' }]
+      release:
+        files: [{
+          expand: yes
+          cwd: 'assets/'
+          src: [ '**/*', '!**/*.{jpg,png,gif,coffee,styl,jade}' ]
+          dest: 'public/'
+        }]
 
     coffee:
       options:
         sourceMap: yes
         sourceRoot: './'
-      dist:
-        files: [{ expand: yes, cwd: 'assets/', src: [ '**/*.coffee' ], dest: 'dist/', ext: '.js' }]
+      release:
+        files: [{
+          expand: yes
+          cwd: 'assets/'
+          src: [ '**/*.coffee' ]
+          dest: 'public/'
+          ext: '.js'
+        }]
 
     stylus:
-      dist:
-        options:
-          compress: off
-        files: [{ expand: yes, cwd: 'assets/', src: [ '**/*.styl' ], dest: 'dist/', ext: '.css' }]
       release:
-        options:
-          compress: on
-        files: [{ expand: yes, cwd: 'assets/', src: [ '**/*.styl' ], dest: 'public/', ext: '.css' }]
+        files: [{
+          expand: yes
+          cwd: 'assets/'
+          src: [ '**/*.styl' ]
+          dest: 'public/'
+          ext: '.css'
+        }]
 
     jade:
-      dist:
-        options:
-          pretty: on
-          data: version: '<%- pkg.version %>'
-        files: [{ expand: yes, cwd: 'assets/', src: [ '**/*.jade' ], dest: 'dist/', ext: '.html' }]
       release:
-        options:
-          pretty: off
-          data: version: '<%- pkg.version %>'
-        files: [{ expand: yes, cwd: 'assets/', src: [ '**/*.jade' ], dest: 'public/', ext: '.html' }]
-
-    coffee_lint:
-      options:
-        max_line_length: value: 79
-        indentation: value: 2
-        newlines_after_classes: level: 'error'
-        no_empty_param_list: level: 'error'
-        no_unnecessary_fat_arrows: level: 'ignore'
-        globals: [ '$', 'console', 'Backbone' ]
-      all:
-        files: [{ expand: yes, cwd: 'assets/', src: [ '**/*.coffee' ] }]
-
-    csslint:
-      options:
-        import: 2
-        'adjoining-classes': off
-        'box-sizing': off
-        'box-model': off
-        'compatible-vendor-prefixes': off
-        'floats': off
-        'font-sizes': off
-        'gradients': off
-        'important': off
-        'known-properties': off
-        'outline-none': off
-        'qualified-headings': off
-        'regex-selectors': off
-        'text-indent': off
-        'unique-headings': off
-        'universal-selector': off
-        'unqualified-attributes': off
-      dist:
-        src: 'dist/**/*.css'
-
-    uglify:
-      dist:
-        options:
-          mangle: on
-        files: [{ expand: yes, cwd: 'dist/', src: [ '**/*.js' ], dest: 'public/', ext: '.js' }]
+        files: [{
+          expand: yes
+          cwd: 'assets/'
+          src: [ '**/*.jade' ]
+          dest: 'public/'
+          ext: '.html'
+        }]
 
     imagemin:
-      dist:
-        files: [{ expand: yes, cwd: 'dist/', src: [ '**/*.{jpg,png,gif}' ], dest: 'public/' }]
-
-    simplemocha:
-      options:
-        ui: 'bdd'
-        reporter: 'spec'
-        compilers: 'coffee:coffee-script'
-        ignoreLeaks: no
-      tests:
-        src: [ 'tests/*.coffee' ]
+      release:
+        files: [{
+          expand: yes
+          cwd: 'assets/'
+          src: [ '**/*.{jpg,png,gif}' ]
+          dest: 'public/'
+        }]
 
     watch:
       options:
         livereload: yes
         interrupt: yes
       imgbuild:
-        files: ['assets/**/*.{jpg,png,gif}']
-        tasks: ['imgbuild']
+        files: [ 'assets/**/*.{jpg,png,gif}' ]
+        tasks: [ 'imagemin' ]
       jsbuild:
-        files: ['assets/**/*.coffee']
-        tasks: ['jsbuild']
+        files: [ 'assets/**/*.coffee' ]
+        tasks: [ 'coffee' ]
       cssbuild:
-        files: ['assets/**/*.styl']
-        tasks: ['cssbuild']
+        files: [ 'assets/**/*.styl' ]
+        tasks: [ 'stylus' ]
       jadebuild:
-        files: ['assets/*.jade']
-        tasks: ['jade']
+        files: [ 'assets/*.jade' ]
+        tasks: [ 'jade' ]
 
     connect:
       server:
         options:
+          hostname: '*'
           port: 3000
           middleware: (connect, options) ->
             mw = [connect.logger 'dev']

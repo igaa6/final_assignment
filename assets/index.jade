@@ -2,11 +2,33 @@
 html
   head
     meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0')
     link(rel='stylesheet', href='/style.css')
 
   body
-    h1 gruntcity
-    p welcome to gruntcity
+    h1 DEVICE MOTION
+
+    button#ini initialize
+
+    div#st1.status
+    div#st2.status
+    div#st3.status
+
+    h2 ACCELERATION
+    p#ac0
+    p#ac1
+    p#ac2
+
+    //- h2 ACCELERATION INCLUDING GRAVITY
+    //- p#ag0.status
+    //- p#ag1.status
+    //- p#ag2.status
+
+    //- h2 ROTATION RATE
+    //- p#rt0.status
+    //- p#rt1.status
+    //- p#rt2.status
+
     script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js')
     script(src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js')
     script(src='//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js')
